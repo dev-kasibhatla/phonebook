@@ -41,6 +41,10 @@ class Klog {
 		try{			
 			logFile.close();
 			logFile.open(logPath,ios::out);
+			timeString = ctime(&currTime);
+			logFile<<"\n\n\n-------------------------------------------------------------------\n";
+			logFile<<"New Session:\n";
+			logFile<<timeString<<endl;
 		}catch(exception e){
 			cout<<"Error clearing logs\n";
 		}
