@@ -75,7 +75,7 @@ class DataProvider	{
 			}
 		}	
 		//all data added to memory
-		cout<<firstName.size()<<" contacts loaded to memory\n";	
+		cout<<firstName.size() - 1<<" contacts loaded to memory\n";	
 	}
 
 	void saveToFile(){
@@ -121,11 +121,7 @@ class DataProvider	{
 	/**
 	 * To check if all vectors are of the same size
 	 * */
-	void printSizesOfAll(){
-		cout<<"sizes:\n";
-		cout<<firstName.size()<<"\t"<<lastName.size()<<"\t"<<phone.size()<<"\t"<<email.size()<<"\t"<<address.size()
-		<<city.size()<<"\t"<<state.size()<<"\n";
-	}
+	
 
 	void add(){
 		string temp1,temp2;
@@ -170,6 +166,19 @@ class DataProvider	{
 		city.erase(city.begin()+index);
 		state.erase(state.begin()+index);
 		saveToFile();
+	}
+
+	int size(){
+		//returns number of contacts
+		return firstName.size();
+	}
+
+	string getName(int index){
+		string name="";
+		name += firstName.at(index);
+		name += " ";
+		name += lastName.at(index);
+		return name;
 	}
 
 	~DataProvider(){
