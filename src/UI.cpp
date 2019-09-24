@@ -4,6 +4,9 @@
 #include<iterator>
 #include<iomanip>
 #include<stdlib.h>
+#include "SearchProvider.cpp"
+#include<set>
+
 /**
  * UI has two sections:
  * 1. Options
@@ -21,10 +24,10 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
     //private members
     //create a map for all options
     map<char,string> optionMap;
-    DataProvider dp;
+    //DataProvider dp;
     Editor editor;
-
-
+    SearchProvider sp;
+    string currentQuery;
     void setOptions(){
         optionMap.insert(pair<char,string>('a',"List Contacts"));
         optionMap.insert(pair<char,string>('b',"Search"));
@@ -35,10 +38,6 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
 
 
         optionMap.insert(pair<char,string>('x',"Exit"));
-    }
-
-    void clrscr(){
-
     }
 
     void printOptions(string op){
@@ -81,6 +80,8 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                         break;
                     case 'b':
                         //Search
+                        searchContacts();
+                        //showOptions(MAIN_SCREEN);
                         break;
                     case 'c':
                         //Create contact
@@ -255,4 +256,19 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             showOptions(MAIN_SCREEN);
         }
     }
+
+    void searchContacts(){
+        cout<<"Type anything: ";
+        cin.clear();
+        string temp;
+        cin>>temp;
+        //todo: convert all strings to lowercase
+        set<int> res = sp.searchEverything(temp);
+        set<int>::iterator it;
+        cout<<endl;
+        for (it = res.begin(); it != res.end(); ++it) { 
+            cout<<editor.getName(*it)<<endl;
+        }    
+        //todo: write a custom showlist function
+    }   
 };
