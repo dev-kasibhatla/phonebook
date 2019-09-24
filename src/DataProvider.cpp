@@ -10,6 +10,7 @@
 using namespace std;
 
 class DataProvider	{
+	protected:
 	string dataPath =  "res/data/dataset.csv";// objectPath = "res/data/.objects/dataprovider.txt";
 	fstream csvData;//objectFile;
 
@@ -22,10 +23,10 @@ class DataProvider	{
 		city.clear();
 		state.clear();
 	}
-	
+
 	public:
 
-	vector<string> firstName, lastName, phone, email, address, city, state; 
+	vector<string> firstName, lastName, phone, email, address, city, state;
 	//public methods
 	DataProvider(){
 		csvData.open(dataPath,ios::in);
@@ -61,7 +62,7 @@ class DataProvider	{
 						default:
 							cout<<"\nError adding elements to vectors\n";
 							exit(0);
-					}					
+					}
 					temp = "";
 					currWord++;
 				}else if(line[i] == '\n' || line[i]=='\r'){
@@ -73,20 +74,25 @@ class DataProvider	{
 					temp.push_back(line[i]);
 				}
 			}
-		}	
+		}
 		//all data added to memory
-		cout<<firstName.size() - 1<<" contacts loaded to memory\n";	
+		cout<<firstName.size() - 1<<" contacts loaded to memory\n";
 	}
 
 	void saveToFile(){
 		//reopen file as out
-		csvData.close();
-		csvData.open(dataPath,ios::out);
-		for (int i=0;i<firstName.size();i++){
-			csvData<<firstName.at(i)<<","<<lastName.at(i)<<","<<phone.at(i)<<
-			","<<email.at(i)<<","<<address.at(i)<<","<<city.at(i)<<","<<state.at(i)<<'\r';
+		
+		try{
+			csvData.close();
+			csvData.open(dataPath,ios::out);
+			for (int i=0;i<firstName.size();i++){
+				csvData<<firstName.at(i)<<","<<lastName.at(i)<<","<<phone.at(i)<<
+				","<<email.at(i)<<","<<address.at(i)<<","<<city.at(i)<<","<<state.at(i)<<'\r';
+			}
+			//cout<<"Contacts saved to file\n";
+		}catch(exception e){
+			cout<<"Error saving to file "<<e.what();
 		}
-		cout<<"Contacts saved to file\n";	
 		//reopen as in
 		csvData.close();
 		csvData.open(dataPath,ios::in);
@@ -121,7 +127,7 @@ class DataProvider	{
 	/**
 	 * To check if all vectors are of the same size
 	 * */
-	
+
 
 	void add(){
 		string temp1,temp2;
@@ -158,6 +164,7 @@ class DataProvider	{
 	}
 
 	bool del(int index){
+		string ftemp = getName(index);
 		firstName.erase(firstName.begin()+index);
 		lastName.erase(lastName.begin()+index);
 		phone.erase(phone.begin()+index);
@@ -166,11 +173,13 @@ class DataProvider	{
 		city.erase(city.begin()+index);
 		state.erase(state.begin()+index);
 		saveToFile();
+		system("clear");
+		cout<<endl<<ftemp<<" was deleted\n";
 	}
 
 	int size(){
 		//returns number of contacts
-		return firstName.size();
+		return firstName.size() - 1;
 	}
 
 	string getName(int index){
@@ -188,4 +197,82 @@ class DataProvider	{
 			cout<<"Dataset already closed\n";
 		}
 	}
+};
+
+class Editor :public DataProvider {
+public:
+
+	void edit(int index){
+		string temp1;
+		cout<<"[Type to change. Press enter to keep the same\n";
+		cout<<"Name: ";
+		cin.ignore();
+		getline(cin,temp1);
+		if(temp1 != ""){
+			cin>>lastName.at(index);
+			firstName.at(index) = temp1;
+		}else{
+			//move a line up
+			system("printf \"\033[1A\"");
+			cout<<"Name: "<<getName(index)<<endl;
+		}
+		cout<<"Phone: ";
+		getline(cin,temp1);
+		if(temp1 !=""){
+			phone.at(index) = temp1;
+		}else{
+			//move a line up
+			system("printf \"\033[1A\"");
+			cout<<"Phone: "<<phone.at(index)<<endl;
+		}
+		cout<<"Email: ";
+		getline(cin,temp1);
+		if(temp1 !=""){
+			email.at(index) = temp1;
+		}else{
+			//move a line up
+			system("printf \"\033[1A\"");
+			cout<<"Email: "<<email.at(index)<<endl;
+		}
+		cout<<"Address: ";
+		getline(cin,temp1);
+		if(temp1 !=""){
+			address.at(index) = temp1;
+		}else{
+			//move a line up
+			system("printf \"\033[1A\"");
+			cout<<"Address: "<<address.at(index)<<endl;
+		}
+		cout<<"City: ";
+		getline(cin,temp1);
+		if(temp1 !=""){
+			city.at(index) = temp1;
+		}else{
+			//move a line up
+			system("printf \"\033[1A\"");
+			cout<<"City: "<<city.at(index)<<endl;
+		}
+		cout<<"State: ";
+		getline(cin,temp1);
+		if(temp1 !=""){
+			state.at(index) = temp1;
+		}else{
+			//move a line up
+			system("printf \"\033[1A\"");
+			cout<<"State: "<<state.at(index)<<endl;
+		}
+		cout<<"Save these changes? [y/n]: ";
+		char c;
+		cin>>c;
+		if(c == 'y' || c=='Y'){
+			saveToFile();
+			system("clear");
+			cout<<"\nChanges to "<<getName(index)<<" were saved\n";
+		}else{
+			system("clear");
+			cout<<"\nChanges to "<<getName(index)<<" were NOT saved\n";
+		}
+		
+	}
+
 };
