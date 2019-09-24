@@ -10,7 +10,7 @@ int main(){
 	logger.clear();
 	//DataProvider dp;
 	//dp.loadFromFile();
-
+	system("clear");
 	UI ui;
 	ui.showOptions(ui.MAIN_SCREEN);
 
