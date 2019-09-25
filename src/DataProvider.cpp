@@ -160,6 +160,7 @@ class DataProvider	{
 			saveToFile();
 			cout<<firstName.back()<<" was saved.\n";
 		}else{
+			loadFromFile();
 			cout<<"Contact was discarded.\n";
 		}
 	}
@@ -225,7 +226,7 @@ public:
 
 	void edit(int index){
 		string temp1;
-		cout<<"[Type to change. Press enter to keep the same\n";
+		cout<<"[Type to change. Press enter to keep the same]\n";
 		cout<<"Name: ";
 		cin.ignore();
 		getline(cin,temp1);
@@ -298,6 +299,7 @@ public:
 		}else{
 			system("clear");
 			cout<<"\nChanges to "<<getName(index)<<" were NOT saved\n";
+			loadFromFile();
 		}
 		
 	}

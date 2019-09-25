@@ -72,6 +72,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         char choice;
         cout<<"Input: ";
         cin>>choice;
+        
         switch(context){
             case -1:
                 //main screen
@@ -85,11 +86,19 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                         searchContacts();
                         //showOptions(MAIN_SCREEN);
                         break;
-                    case 'c':
+                    case 'c': {
                         //Create contact
+                        int s = editor.size();                        
                         editor.add();
-                        displayContact(editor.size());
+                        if(s < editor.size()){
+                            //new contact was added
+                            displayContact(editor.size());
+                        }else{
+                            showOptions(MAIN_SCREEN);
+                        }
+                        
                         break;
+                    }
                     case 'x':
                         cout<<"User chose to exit\nBye :)\n\n";
                         exit(0);
@@ -188,6 +197,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             cout<<"No results to display :(\nWould you like to search for something else?[y/n]:  ";
             char c; 
             cin>>c;
+            
             if(c =='y' || c=='Y'){
                 searchContacts();
             }else{
@@ -231,7 +241,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         cout<<"Input:  ";
         char c;
         cin>>c;
-                
+        
         if(c=='m' || c== 'M'){
             system("clear");
             if(start+max >= res.size()){
@@ -251,7 +261,9 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             if(i > res.size()){
                 cout<<"This search result doesn't exist\n";
                 cout<<"Search again? [y/n]:  ";
-                char c; cin>>c;
+                char c;
+                cin>>c;
+                
                 if(c == 'y' || 'Y'){
                     searchContacts();
                 }
@@ -365,6 +377,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         cout<<"\nInput:  ";
         char c;
         cin>>c;
+        
         if(c=='m' || c == 'M'){
             showList(max);
         }else if(c == 'p' || c=='P'){
@@ -376,7 +389,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             //system("clear");
             displayContact(i_edit_num);
         }else{
-            cin.clear();
+            
             system("clear");
             showOptions(MAIN_SCREEN);
         }
@@ -395,9 +408,9 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         }
         cout<<"\n\n";
         cout<<"Type anything: ";
-        //cin.clear();
+        //
         string temp;
-        cin.ignore();
+        
         getline(cin,temp);
         SearchProvider sp;
         set<int> res = sp.searchEverything(temp);        
