@@ -200,6 +200,25 @@ class DataProvider	{
 };
 
 class Editor :public DataProvider {
+	string * explode(string s){
+		string *n = new string[2];
+		string temp1, temp2;
+		bool flag = false;
+		for(int i=0;i<s.length();i++){
+			if(!flag){
+				if(s[i] == ' '){
+					n[0] = temp1;
+				}else{
+					temp1 += s[i];
+				}
+			}else{
+				temp2 += s[i];
+			}
+		}
+		n[1] = temp2;
+		return n;
+	}
+
 public:
 
 	void edit(int index){
@@ -209,13 +228,15 @@ public:
 		cin.ignore();
 		getline(cin,temp1);
 		if(temp1 != ""){
-			cin>>lastName.at(index);
-			firstName.at(index) = temp1;
+			string *n = explode(temp1);
+			firstName.at(index) = n[0];
+			lastName.at(index) = n[1];
 		}else{
 			//move a line up
 			system("printf \"\033[1A\"");
 			cout<<"Name: "<<getName(index)<<endl;
 		}
+		//cin.ignore();
 		cout<<"Phone: ";
 		getline(cin,temp1);
 		if(temp1 !=""){
@@ -225,6 +246,7 @@ public:
 			system("printf \"\033[1A\"");
 			cout<<"Phone: "<<phone.at(index)<<endl;
 		}
+		//cin.ignore();
 		cout<<"Email: ";
 		getline(cin,temp1);
 		if(temp1 !=""){
@@ -234,6 +256,7 @@ public:
 			system("printf \"\033[1A\"");
 			cout<<"Email: "<<email.at(index)<<endl;
 		}
+		//cin.ignore();
 		cout<<"Address: ";
 		getline(cin,temp1);
 		if(temp1 !=""){
@@ -243,6 +266,7 @@ public:
 			system("printf \"\033[1A\"");
 			cout<<"Address: "<<address.at(index)<<endl;
 		}
+		//cin.ignore();
 		cout<<"City: ";
 		getline(cin,temp1);
 		if(temp1 !=""){
@@ -252,6 +276,7 @@ public:
 			system("printf \"\033[1A\"");
 			cout<<"City: "<<city.at(index)<<endl;
 		}
+		//cin.ignore();
 		cout<<"State: ";
 		getline(cin,temp1);
 		if(temp1 !=""){
