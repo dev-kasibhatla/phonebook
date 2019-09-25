@@ -1,6 +1,6 @@
 #include<iostream>
 #include<vector>
-#include<iterator>
+//#include<iterator>
 #include<algorithm>
 #include<set>
 //#include "DataProvider.cpp"
@@ -45,6 +45,12 @@ class SearchProvider{
 		return kernels;
 	}
 
+	string toLowerCase(string s)  {
+        transform(s.begin(), s.end(), s.begin(),
+        [](unsigned char c){ return tolower(c); });
+        return s;
+    }
+
 
 	public:
 	SearchProvider(){
@@ -53,6 +59,7 @@ class SearchProvider{
 
 	set<int> searchEverything(string q){
 		results.clear();
+		q = toLowerCase(q);
 		searchNames(q);
 		searchRest(q);
 		return results;
@@ -62,7 +69,7 @@ class SearchProvider{
 		logger.log("Query: "+q);
 		int size = editor.firstName.size();
 		for(int i=1;i<size;i++){
-			if(isSubString(editor.getName(i), q)){
+			if(isSubString(toLowerCase(editor.getName(i)), q)){
 				results.insert(i);
 			}
 		}
