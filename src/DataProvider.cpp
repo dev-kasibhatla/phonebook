@@ -76,7 +76,7 @@ class DataProvider	{
 			}
 		}
 		//all data added to memory
-		cout<<firstName.size() - 1<<" contacts loaded to memory\n";
+		//cout<<firstName.size() - 1<<" contacts loaded to memory\n";
 	}
 
 	void saveToFile(){
@@ -143,7 +143,8 @@ class DataProvider	{
 		phone.push_back(temp1);
 		email.push_back(temp2);
 		cout<<"Address: ";
-		cin>>temp1;
+		cin.ignore();
+		getline(cin,temp1);
 		cout<<"City: ";
 		cin>>temp2;
 		address.push_back(temp1);
@@ -152,7 +153,7 @@ class DataProvider	{
 		cin>>temp1;
 		state.push_back(temp1);
 
-		cout<<"Data has been collected. Save?[y/n]\n";
+		cout<<"Data has been collected. Save?[y/n]:  ";
 		char choice;
 		cin>>choice;
 		if(choice=='y' || choice == 'Y'){
@@ -208,6 +209,7 @@ class Editor :public DataProvider {
 			if(!flag){
 				if(s[i] == ' '){
 					n[0] = temp1;
+					flag=true;
 				}else{
 					temp1 += s[i];
 				}
