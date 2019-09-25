@@ -1,9 +1,7 @@
 #include<iostream>
 #include<vector>
-//#include<iterator>
 #include<algorithm>
 #include<set>
-//#include "DataProvider.cpp"
 using namespace std;
 
 
