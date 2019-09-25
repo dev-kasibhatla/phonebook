@@ -132,6 +132,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
     }
 
     void displayContact(int index){
+        i_edit_num = index;
         string name = editor.getName(index);
         string phone = editor.phone.at(index);
         string email = editor.email.at(index);
@@ -153,6 +154,86 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         cout<<"\n\n\t";
         startSwitch(CURRENT_CONTEXT);
 
+    }
+
+    void showList(set<int> res, int start){
+        cout<<endl;
+        cout<<res.size()<<" search results"<<endl;
+        //boiler plate
+        int width = 120, max = 25;
+        for(int i=0;i<width;i++){
+            cout<<"-";
+        }
+        cout<<"\n";
+        cout<<setw((width/2)+10)<<right<<"//SEARCH RESULTS//"<<endl;
+        for(int i=0;i<width;i++){
+            cout<<"-";
+        }
+        cout<<"\n\n";
+
+        set<int>::iterator it, itEnd;
+        it = res.begin();
+        itEnd = res.begin();
+        advance(it,start);
+        advance(itEnd,start+max);
+        /*if(max > res.size())     {
+            if(res.size()>max){
+                advance(it,res.size() -start-max);
+            }            
+            itEnd = res.end();
+        }else if(start < 0){
+            it = res.begin();
+            advance(itEnd,start+max);
+        }*/
+        
+        cout<<"\t\t"<<"Name\t\t\tPhone\t\tEmail\t\t\t\tCity\t\t\tState\n\n";
+        for (; it != itEnd; ++it) { 
+            int dist = distance(res.begin(),it)+1;
+            cout<<"\t"<<dist<<"\t";
+            cout<<editor.getName(*it)<<"\t";
+            if(editor.getName(*it).length() < 16){
+                cout<<"\t";
+            }
+            cout<<editor.phone.at(*it)<<"\t";
+            cout<<editor.email.at(*it)<<"\t";
+            if(editor.email.at(*it).length() < 24){
+                cout<<'\t';
+            }if(editor.email.at(*it).length() < 16){
+                cout<<'\t';
+            }
+            cout<<editor.city.at(*it)<<"\t\t";
+            if(editor.city.at(*it).length() < 8){
+                cout<<"\t";
+            }
+            cout<<editor.state.at(*it)<<endl;
+        }  
+
+        cout<<"\n\n";
+        cout<<"Press 'm' to show more, 'p' to show previous, 's' to select\nAnything else to go back home\nInput:\t";
+        char c;
+        cin>>c;
+        system("clear");
+        
+        if(c=='m' || c== 'M'){
+            if(start+max >= res.size()){
+                start = res.size() - 2*max;
+            }            
+            showList(res,start+max);
+        }else if(c=='p' || c=='P'){
+            if(start - max < 0){
+                start = max;
+            }
+            showList(res,start - max);
+        }else if(c =='s'||c=='S'){
+            cout<<"Please enter the index:  ";
+            int i;
+            cin>>i;
+            it = res.begin();
+            advance(it,i-1);
+            displayContact(*it);
+        }else{
+            showOptions(MAIN_SCREEN);
+        }
     }
 
     public:
@@ -240,6 +321,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         cout<<"\n[type 'm' for more, 'p' for previous, 's' to select a contact\nType anything else to go to home screen]: ";
         char c;
         cin>>c;
+        system("clear");
         if(c=='m' || c == 'M'){
             showList(max);
         }else if(c == 'p' || c=='P'){
@@ -258,17 +340,26 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
     }
 
     void searchContacts(){
+        system("clear");
+        int width = 120;
+        for(int i=0;i<width;i++){
+            cout<<"-";
+        }
+        cout<<"\n";
+        cout<<setw((width/2)+6)<<right<<"//SEARCH//"<<endl;
+        for(int i=0;i<width;i++){
+            cout<<"-";
+        }
+        cout<<"\n\n";
         cout<<"Type anything: ";
         cin.clear();
         string temp;
         cin>>temp;
-        //todo: convert all strings to lowercase
-        set<int> res = sp.searchEverything(temp);
-        set<int>::iterator it;
-        cout<<endl;
-        for (it = res.begin(); it != res.end(); ++it) { 
-            cout<<editor.getName(*it)<<endl;
-        }    
+        set<int> res = sp.searchEverything(temp);        
+          
         //todo: write a custom showlist function
-    }   
+        showList(res,0);
+    }
+
+       
 };
