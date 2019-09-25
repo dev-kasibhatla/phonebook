@@ -24,6 +24,16 @@ class DataProvider	{
 		state.clear();
 	}
 
+	void popVectors(){
+		firstName.pop_back();
+		lastName.pop_back();
+		phone.pop_back();
+		email.pop_back();
+		address.pop_back();
+		city.pop_back();
+		state.pop_back();
+	}
+
 	public:
 
 	vector<string> firstName, lastName, phone, email, address, city, state;
@@ -34,6 +44,7 @@ class DataProvider	{
 
 	void loadFromFile(){
 		clearVectors();
+		//set pointer to start:
 		string line, temp="";
 		int currWord=0;
 		while(getline(csvData,line)){
@@ -160,7 +171,7 @@ class DataProvider	{
 			saveToFile();
 			cout<<firstName.back()<<" was saved.\n";
 		}else{
-			loadFromFile();
+			popVectors();
 			cout<<"Contact was discarded.\n";
 		}
 	}
@@ -299,7 +310,7 @@ public:
 		}else{
 			system("clear");
 			cout<<"\nChanges to "<<getName(index)<<" were NOT saved\n";
-			loadFromFile();
+			popVectors();
 		}
 		
 	}
