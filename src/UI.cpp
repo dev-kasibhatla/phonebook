@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include<map>
 #include<iterator>
 #include<iomanip>
@@ -26,28 +25,31 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
     map<char,string> optionMap;
     //DataProvider dp;
     Editor editor;
-    SearchProvider sp;
     string currentQuery;
     void setOptions(){
         optionMap.insert(pair<char,string>('a',"List Contacts"));
         optionMap.insert(pair<char,string>('b',"Search"));
         optionMap.insert(pair<char,string>('c',"Create a contact"));
-        optionMap.insert(pair<char,string>('e',"Edit this contact"));
-        optionMap.insert(pair<char,string>('d',"Delete this contact"));
+        optionMap.insert(pair<char,string>('e',"Edit contact"));
+        optionMap.insert(pair<char,string>('d',"Delete contact"));
         optionMap.insert(pair<char,string>('h',"Home"));
+        optionMap.insert(pair<char,string>('m',"Show More"));
+        optionMap.insert(pair<char,string>('p',"Show Previous"));
+        optionMap.insert(pair<char,string>('s',"Select"));
+
 
 
         optionMap.insert(pair<char,string>('x',"Exit"));
     }
 
-    void printOptions(string op){
+    void printOptions(string op, string title){
         int width = 120;
         int len = 7;
         for(int i=0;i<width;i++){
             cout<<"-";
         }
         cout<<"\n";
-        cout<<setw((width/2)+len/2)<<right<<"//OPTIONS//"<<endl;
+        cout<<setw((width/2)+len/2)<<right<<"//"<<title<<"//"<<endl;
 
         cout<<endl;
         string opConstructor="";
@@ -86,7 +88,11 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                     case 'c':
                         //Create contact
                         editor.add();
+                        displayContact(editor.size());
                         break;
+                    case 'x':
+                        cout<<"User chose to exit\nBye :)\n\n";
+                        exit(0);
                     default:
                         //Bad choice
                         cout<<"Sorry. You entered an invalid option\n";
@@ -95,13 +101,14 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                 }
                 break;
             case -4:
-                //Contact is being displayed abdhe
+                //Contact is being displayed abdhex
                 switch(choice){
                     case 'a':
                         showList(1);
                         break;
                     case 'b':
                         //search
+                        searchContacts();
                         break;
                     case 'd':
                         //delete
@@ -117,6 +124,9 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                         //go home
                         showOptions(MAIN_SCREEN);
                         break;
+                    case 'x':
+                        cout<<"User chose to exit\nBye :)\n\n";
+                        exit(0);
                     default:
                         cout<<"Sorry. You entered an invalid option\n";
                         startSwitch(context);
@@ -157,10 +167,12 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
     }
 
     void showList(set<int> res, int start){
-        cout<<endl;
-        cout<<res.size()<<" search results"<<endl;
+        
+        //cout<<endl;
+        system("clear");
         //boiler plate
         int width = 120, max = 25;
+        /*
         for(int i=0;i<width;i++){
             cout<<"-";
         }
@@ -168,24 +180,30 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         cout<<setw((width/2)+10)<<right<<"//SEARCH RESULTS//"<<endl;
         for(int i=0;i<width;i++){
             cout<<"-";
-        }
+        }*/
+        cout<<res.size()<<" search results"<<endl;
+        showOptions(SEARCH_CONTACTS);
         cout<<"\n\n";
-
+        if(res.size() == 0){
+            cout<<"No results to display :(\nWould you like to search for something else?[y/n]:  ";
+            char c; 
+            cin>>c;
+            if(c =='y' || c=='Y'){
+                searchContacts();
+            }else{
+                showOptions(MAIN_SCREEN);
+            }
+        }
         set<int>::iterator it, itEnd;
         it = res.begin();
         itEnd = res.begin();
-        advance(it,start);
-        advance(itEnd,start+max);
-        /*if(max > res.size())     {
-            if(res.size()>max){
-                advance(it,res.size() -start-max);
-            }            
-            itEnd = res.end();
-        }else if(start < 0){
-            it = res.begin();
+        if(res.size()>max){
+            advance(it,start);
             advance(itEnd,start+max);
-        }*/
-        
+        }else{
+            itEnd = res.end();
+        }
+       
         cout<<"\t\t"<<"Name\t\t\tPhone\t\tEmail\t\t\t\tCity\t\t\tState\n\n";
         for (; it != itEnd; ++it) { 
             int dist = distance(res.begin(),it)+1;
@@ -209,17 +227,19 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         }  
 
         cout<<"\n\n";
-        cout<<"Press 'm' to show more, 'p' to show previous, 's' to select\nAnything else to go back home\nInput:\t";
+        // cout<<"Press 'm' to show more, 'p' to show previous, 's' to select\nAnything else to go back home\nInput:\t";
+        cout<<"Input:  ";
         char c;
         cin>>c;
-        system("clear");
-        
+                
         if(c=='m' || c== 'M'){
+            system("clear");
             if(start+max >= res.size()){
                 start = res.size() - 2*max;
             }            
             showList(res,start+max);
         }else if(c=='p' || c=='P'){
+            system("clear");
             if(start - max < 0){
                 start = max;
             }
@@ -228,6 +248,17 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             cout<<"Please enter the index:  ";
             int i;
             cin>>i;
+            if(i > res.size()){
+                cout<<"This search result doesn't exist\n";
+                cout<<"Search again? [y/n]:  ";
+                char c; cin>>c;
+                if(c == 'y' || 'Y'){
+                    searchContacts();
+                }
+                else{
+                    showOptions(MAIN_SCREEN);
+                }
+            }
             it = res.begin();
             advance(it,i-1);
             displayContact(*it);
@@ -239,7 +270,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
     public:
 
     int CURRENT_CONTEXT = 0;
-    int MAIN_SCREEN = -1, LIST_CONTACTS=-2, CREATE_CONTACTS=-3, DISPLAY_CONTACT=-4;
+    int MAIN_SCREEN = -1, LIST_CONTACTS=-2, SEARCH_CONTACTS=-3, DISPLAY_CONTACT=-4;
     UI (){
 
         editor.loadFromFile();
@@ -257,17 +288,26 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                 //Show List all, search, create, exit
                 op = "abcx";
                 system("clear");
-                printOptions(op);
+                printOptions(op, "HOME");
                 startSwitch(context);
                 break;
             case -2:
+                //list contacts
+                op = "mpsh";
+                system("clear");
+                printOptions(op, "LIST");
+                //startSwitch(context);
                 break;
             case -3:
+                //search results
+                op = "mpsh";
+                //system("clear");
+                printOptions(op, "SEARCH RESULTS");
                 break;
             case -4:
                 //A contact is being displayed
-                op = "abedh";
-                printOptions(op);
+                op = "abedhx";
+                printOptions(op, "View contact");
                 break;
             default:
                 cout<<"Error while showing options";
@@ -278,9 +318,10 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
     }
 
     void showList(int start){
-        system("clear");
+        //system("clear");
+        
         int max = start + 50;
-        int width = 120;
+        /*int width = 120;
         for(int i=0;i<width;i++){
             cout<<"-";
         }
@@ -290,7 +331,9 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             cout<<"-";
         }
         cout<<"\n\n";
-
+        */
+        showOptions(LIST_CONTACTS);
+        cout<<"\n\n";
         if(start>=editor.size()){
             start = editor.size() - 49;
             max = start + 50;
@@ -318,10 +361,10 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             }            
             cout<<editor.getName(i+1)<<endl;
         }
-        cout<<"\n[type 'm' for more, 'p' for previous, 's' to select a contact\nType anything else to go to home screen]: ";
+        //cout<<"\n[type 'm' for more, 'p' for previous, 's' to select a contact\nType anything else to go to home screen]: ";
+        cout<<"\nInput:  ";
         char c;
         cin>>c;
-        system("clear");
         if(c=='m' || c == 'M'){
             showList(max);
         }else if(c == 'p' || c=='P'){
@@ -352,11 +395,13 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         }
         cout<<"\n\n";
         cout<<"Type anything: ";
-        cin.clear();
+        //cin.clear();
         string temp;
-        cin>>temp;
+        cin.ignore();
+        getline(cin,temp);
+        SearchProvider sp;
         set<int> res = sp.searchEverything(temp);        
-          
+        
         //todo: write a custom showlist function
         showList(res,0);
     }
