@@ -72,7 +72,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         CURRENT_CONTEXT = context;
         //clear screen
         string choice;
-        if(invalid_choice){cout<<"Invalid Choice was entered please try again\n\n";invalid_choice=0;}
+        if(invalid_choice){cout<<"Invalid Choice. Please try again\n\n";invalid_choice=0;}
         cout<<"Input: ";
         getline(cin,choice);
         //cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
@@ -166,7 +166,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                 }
                 else{
                     invalid_choice = 1;
-                    cout<<"Sorry. You entered an invalid option\n";
+                    //cout<<"Sorry. You entered an invalid option\n";
                     startSwitch(context);
 
                 }
