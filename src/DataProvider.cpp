@@ -5,6 +5,8 @@
 #include<vector>
 #include<istream>
 #include<stdlib.h>
+#include <limits>
+
 
 
 using namespace std;
@@ -39,12 +41,13 @@ class DataProvider	{
 	vector<string> firstName, lastName, phone, email, address, city, state;
 	//public methods
 	DataProvider(){
-		csvData.open(dataPath,ios::in);
+		
 	}
 
 	void loadFromFile(){
 		clearVectors();
 		//set pointer to start:
+		csvData.open(dataPath,ios::in);
 		string line, temp="";
 		int currWord=0;
 		while(getline(csvData,line)){
@@ -88,13 +91,14 @@ class DataProvider	{
 		}
 		//all data added to memory
 		//cout<<firstName.size() - 1<<" contacts loaded to memory\n";
+		csvData.close();
 	}
 
 	void saveToFile(){
 		//reopen file as out
 		
 		try{
-			csvData.close();
+			//csvData.close();
 			csvData.open(dataPath,ios::out);
 			for (int i=0;i<firstName.size();i++){
 				csvData<<firstName.at(i)<<","<<lastName.at(i)<<","<<phone.at(i)<<
@@ -106,39 +110,9 @@ class DataProvider	{
 		}
 		//reopen as in
 		csvData.close();
-		csvData.open(dataPath,ios::in);
+		//csvData.open(dataPath,ios::in);
 	}
-	/*
-	void load(){
-		try{
-			objectFile.open(objectPath,ios::in);
-			objectFile.read((char*)this,sizeof(*this));
-			objectFile.close();
-			if(firstName.size()<2){
-				loadFromFile();
-				save();
-			}
-		}catch(exception e){
-			cout<<"error reading object\n";
-			loadFromFile();
-		}
-	}
-	*/
-	/**
-	 * Save instance to memory
-	 * */
-	/*
-	void save (){
-		objectFile.open(objectPath,ios::out);
-		objectFile.write((char*)this,sizeof(*this));
-		objectFile.close();
-		cout<<"Successfully saved object\n";
-	}
-	*/
-	/**
-	 * To check if all vectors are of the same size
-	 * */
-
+	
 
 	void add(){
 		string temp1,temp2;
@@ -235,11 +209,11 @@ class Editor :public DataProvider {
 
 public:
 
-	void edit(int index){
+	bool edit(int index){
 		string temp1;
 		cout<<"[Type to change. Press enter to keep the same]\n";
 		cout<<"Name: ";
-		cin.ignore();
+		//cin.ignore(numeric_limits<streamsize>::max(),'\n');
 		getline(cin,temp1);
 		if(temp1 != ""){
 			string *n = explode(temp1);
@@ -307,10 +281,12 @@ public:
 			saveToFile();
 			system("clear");
 			cout<<"\nChanges to "<<getName(index)<<" were saved\n";
+			return true;
 		}else{
 			system("clear");
 			cout<<"\nChanges to "<<getName(index)<<" were NOT saved\n";
-			popVectors();
+			return false;
+			
 		}
 		
 	}
