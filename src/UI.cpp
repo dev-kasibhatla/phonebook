@@ -143,10 +143,12 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                             showOptions(MAIN_SCREEN);
                             break;
                         case 'e':
-                            //edit
+                            //edit                           
                             if(!editor.edit(i_edit_num)){
                                 editor.loadFromFile();
                             }
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(),'\n');
                             displayContact(i_edit_num);
                             
                             break;
@@ -166,7 +168,6 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                 }
                 else{
                     invalid_choice = 1;
-                    //cout<<"Sorry. You entered an invalid option\n";
                     startSwitch(context);
 
                 }
@@ -438,4 +439,3 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
 
        
 };
-
