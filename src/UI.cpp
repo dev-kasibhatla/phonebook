@@ -56,9 +56,12 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             //cout<<op[i]<<". "<<optionMap.at(op[i])<<"\t";
             opConstructor += op[i];
             opConstructor += ". ";
-            opConstructor+= optionMap.at(op[i])+ "\t";
+            opConstructor+= optionMap.at(op[i])+ "     ";
+            /*if(optionMap.at(op[i]).length() > 15){
+                cout<<'\t';
+            }*/
         }
-        cout<<setw((width/2)+opConstructor.length()/2 - 7)<<right<<opConstructor<<endl;
+        cout<<setw((width/2)+opConstructor.length()/2 + 7)<<right<<opConstructor<<endl;
         for(int i=0;i<width;i++){
             cout<<"-";
         }
@@ -71,8 +74,8 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         string choice;
         if(invalid_choice){cout<<"Invalid Choice was entered please try again\n\n";invalid_choice=0;}
         cout<<"Input: ";
-        cin>>choice;
-        cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
+        getline(cin,choice);
+        //cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
         switch(context){
             case -1:
                 //main screen
@@ -205,23 +208,15 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         system("clear");
         //boiler plate
         int width = 120, max = 25;
-        /*
-        for(int i=0;i<width;i++){
-            cout<<"-";
-        }
-        cout<<"\n";
-        cout<<setw((width/2)+10)<<right<<"//SEARCH RESULTS//"<<endl;
-        for(int i=0;i<width;i++){
-            cout<<"-";
-        }*/
+        
         cout<<res.size()<<" search results"<<endl;
         showOptions(SEARCH_CONTACTS);
         cout<<"";
         if(res.size() == 0){
             cout<<"No results to display :(\nWould you like to search for something else?[y/n]:  ";
             string c; 
-            cin>>c;
-            cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
+            getline(cin,c);
+            //cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
             if(c =="y" || c=="Y"){
                 searchContacts();
             }else{
@@ -261,11 +256,10 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         }  
 
         cout<<"\n\n";
-        // cout<<"Press 'm' to show more, 'p' to show previous, 's' to select\nAnything else to go back home\nInput:\t";
         cout<<"Input:  ";
         string c;
-        cin>>c;
-        cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
+        getline(cin,c);
+        //cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
         if(c=="m" || c== "M"){
             system("clear");
             if(start+max >= res.size()){
@@ -280,27 +274,31 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
             showList(res,start - max);
         }else if(c =="s"||c=="S"){
             cout<<"Please enter the index:  ";
-            int i;
-            cin>>i;
-            if(i > res.size()){
-                cout<<"This search result doesn't exist\n";
-                cout<<"Search again? [y/n]:  ";
-                string c;
-                cin>>c;
-                cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
-                if(c == "y" || "Y"){
-                    searchContacts();
-                }
-                else{
-                    showOptions(MAIN_SCREEN);
-                }
-            }
+            int i = thisIsANumber(res.size());        
+            
             it = res.begin();
             advance(it,i-1);
             displayContact(*it);
+        }else if(c == "b" || c=="B"){
+            searchContacts();
         }else{
             showOptions(MAIN_SCREEN);
         }
+    }
+
+    int thisIsANumber(int max){
+        int value;
+        cin >> value;
+        while(cin.fail() || value > max)
+        {
+            cout << "Invalid Entry. Please enter a number between 1 and "<<max<<": ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin >> value;
+        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return value;
     }
 
     public:
@@ -336,7 +334,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                 break;
             case -3:
                 //search results
-                op = "mpsh";
+                op = "mpshb";
                 //system("clear");
                 printOptions(op, "SEARCH RESULTS");
                 break;
@@ -357,23 +355,13 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         //system("clear");
         
         int max = start + 50;
-        /*int width = 120;
-        for(int i=0;i<width;i++){
-            cout<<"-";
-        }
-        cout<<"\n";
-        cout<<setw((width/2)+5)<<right<<"//LIST//"<<endl;
-        for(int i=0;i<width;i++){
-            cout<<"-";
-        }
-        cout<<"\n\n";
-        */
+       
         showOptions(LIST_CONTACTS);
         //cout<<"\n\n";
         if(start>=editor.size()){
             start = editor.size() - 49;
             max = start + 50;
-            cout<<"No more contacts to display\n\n";
+            //cout<<"No more contacts to display\n\n";
         }else if(start < 0){
             start =1;
             max = start + 50;
@@ -400,8 +388,8 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         //cout<<"\n[type 'm' for more, 'p' for previous, 's' to select a contact\nType anything else to go to home screen]: ";
         cout<<"\nInput:  ";
         string c;
-        cin>>c;
-        cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
+        getline(cin,c);
+        //cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
         if(c=="m" || c == "M"){
             showList(max);
         }else if(c == "p" || c=="P"){
@@ -409,7 +397,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         }else if(c == "s" || c=="S"){
             cout<<"Please enter the index:  ";
             // int i;
-            cin>>i_edit_num;
+            i_edit_num = thisIsANumber(editor.size());
             //system("clear");
             displayContact(i_edit_num);
         }else if(c=="h" || c=="H"){
@@ -450,3 +438,4 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
 
        
 };
+
