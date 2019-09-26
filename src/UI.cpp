@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdbool.h>
 #include<map>
 #include<iterator>
 #include<iomanip>
@@ -16,7 +17,7 @@
  */
 
 using namespace std;
-
+bool invalid_choice = 0;
 int i_edit_num;  //global variable used for edit Contact functionality now can be used for all places where array index is required
  class UI{
 
@@ -36,8 +37,6 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         optionMap.insert(pair<char,string>('m',"Show More"));
         optionMap.insert(pair<char,string>('p',"Show Previous"));
         optionMap.insert(pair<char,string>('s',"Select"));
-
-
 
         optionMap.insert(pair<char,string>('x',"Exit"));
     }
@@ -69,80 +68,105 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
     void startSwitch(int context){
         CURRENT_CONTEXT = context;
         //clear screen
-        char choice;
+        string choice;
+        if(invalid_choice){cout<<"Invalid Choice was entered please try again\n\n";invalid_choice=0;}
         cout<<"Input: ";
         cin>>choice;
         cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
         switch(context){
             case -1:
                 //main screen
-                switch(choice){
-                    case 'a':
-                        //List contacts
-                        showList(1);
-                        break;
-                    case 'b':
-                        //Search
-                        searchContacts();
-                        //showOptions(MAIN_SCREEN);
-                        break;
-                    case 'c': {
-                        //Create contact
-                        int s = editor.size();                        
-                        editor.add();
-                        if(s < editor.size()){
-                            //new contact was added
-                            displayContact(editor.size());
-                        }else{
-                            showOptions(MAIN_SCREEN);
+                if(choice.length()==1){              
+
+                    switch(choice[0]){
+                        case 'a':
+                            //List contacts
+                            showList(1);
+                            break;
+                        case 'b':
+                            //Search
+                            searchContacts();
+                            //showOptions(MAIN_SCREEN);
+                            break;
+                        case 'c': {
+                            //Create contact
+                            int s = editor.size();                        
+                            editor.add();
+                            if(s < editor.size()){
+                                //new contact was added
+                                displayContact(editor.size());
+                            }else{
+                                showOptions(MAIN_SCREEN);
+                            }
+                            
+                            break;
                         }
-                        
-                        break;
+                        case 'x':
+                            cout<<"User chose to exit\nBye :)\n\n";
+                            exit(0);
+                        default:
+                            //Bad choice
+
+                           invalid_choice = 1;
+                        showOptions(MAIN_SCREEN); 
+                            break;
                     }
-                    case 'x':
-                        cout<<"User chose to exit\nBye :)\n\n";
-                        exit(0);
-                    default:
-                        //Bad choice
-                        cout<<"Sorry. You entered an invalid option\n";
-                        startSwitch(context);
-                        break;
+                    
+                }
+                else{
+                  
+                    invalid_choice = 1;
+                    showOptions(MAIN_SCREEN); 
+                    //Bad choice
+                    
+                             
                 }
                 break;
             case -4:
                 //Contact is being displayed abdhex
-                switch(choice){
-                    case 'a':
-                        showList(1);
-                        break;
-                    case 'b':
-                        //search
-                        searchContacts();
-                        break;
-                    case 'd':
-                        //delete
-                        editor.del(i_edit_num);
-                        showOptions(MAIN_SCREEN);
-                        break;
-                    case 'e':
-                        //edit
-                        editor.edit(i_edit_num);
-                        displayContact(i_edit_num);
-                        break;
-                    case 'h':
-                        //go home
-                        showOptions(MAIN_SCREEN);
-                        break;
-                    case 'x':
-                        cout<<"User chose to exit\nBye :)\n\n";
-                        exit(0);
-                    default:
-                        cout<<"Sorry. You entered an invalid option\n";
-                        startSwitch(context);
-                        break;
+               if(choice.length()==1){
+
+                    switch(choice[0]){
+                        case 'a':
+                            showList(1);
+                            break;
+                        case 'b':
+                            //search
+                            searchContacts();
+                            break;
+                        case 'd':
+                            //delete
+                            editor.del(i_edit_num);
+                            showOptions(MAIN_SCREEN);
+                            break;
+                        case 'e':
+                            //edit
+                            if(!editor.edit(i_edit_num)){
+                                editor.loadFromFile();
+                            }
+                            displayContact(i_edit_num);
+                            
+                            break;
+                        case 'h':
+                            //go home
+                            showOptions(MAIN_SCREEN);
+                            break;
+                        case 'x':
+                            cout<<"User chose to exit\nBye :)\n\n";
+                            exit(0);
+                        default:
+                            invalid_choice = 1;
+                            showOptions(MAIN_SCREEN); 
+                            break;
+
+                    }
+                }
+                else{
+                    invalid_choice = 1;
+                    cout<<"Sorry. You entered an invalid option\n";
+                    startSwitch(context);
 
                 }
-
                 break;
             default:
                 cout<<"A contextual error occured\n";
@@ -192,13 +216,13 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         }*/
         cout<<res.size()<<" search results"<<endl;
         showOptions(SEARCH_CONTACTS);
-        cout<<"\n\n";
+        cout<<"";
         if(res.size() == 0){
             cout<<"No results to display :(\nWould you like to search for something else?[y/n]:  ";
-            char c; 
+            string c; 
             cin>>c;
             cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
-            if(c =='y' || c=='Y'){
+            if(c =="y" || c=="Y"){
                 searchContacts();
             }else{
                 showOptions(MAIN_SCREEN);
@@ -239,32 +263,32 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         cout<<"\n\n";
         // cout<<"Press 'm' to show more, 'p' to show previous, 's' to select\nAnything else to go back home\nInput:\t";
         cout<<"Input:  ";
-        char c;
+        string c;
         cin>>c;
         cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
-        if(c=='m' || c== 'M'){
+        if(c=="m" || c== "M"){
             system("clear");
             if(start+max >= res.size()){
                 start = res.size() - 2*max;
             }            
             showList(res,start+max);
-        }else if(c=='p' || c=='P'){
+        }else if(c=="p" || c=="P"){
             system("clear");
             if(start - max < 0){
                 start = max;
             }
             showList(res,start - max);
-        }else if(c =='s'||c=='S'){
+        }else if(c =="s"||c=="S"){
             cout<<"Please enter the index:  ";
             int i;
             cin>>i;
             if(i > res.size()){
                 cout<<"This search result doesn't exist\n";
                 cout<<"Search again? [y/n]:  ";
-                char c;
+                string c;
                 cin>>c;
                 cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
-                if(c == 'y' || 'Y'){
+                if(c == "y" || "Y"){
                     searchContacts();
                 }
                 else{
@@ -345,7 +369,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         cout<<"\n\n";
         */
         showOptions(LIST_CONTACTS);
-        cout<<"\n\n";
+        //cout<<"\n\n";
         if(start>=editor.size()){
             start = editor.size() - 49;
             max = start + 50;
@@ -375,21 +399,26 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         }
         //cout<<"\n[type 'm' for more, 'p' for previous, 's' to select a contact\nType anything else to go to home screen]: ";
         cout<<"\nInput:  ";
-        char c;
+        string c;
         cin>>c;
         cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
-        if(c=='m' || c == 'M'){
+        if(c=="m" || c == "M"){
             showList(max);
-        }else if(c == 'p' || c=='P'){
+        }else if(c == "p" || c=="P"){
             showList(start-50);
-        }else if(c == 's'){
+        }else if(c == "s" || c=="S"){
             cout<<"Please enter the index:  ";
             // int i;
             cin>>i_edit_num;
             //system("clear");
             displayContact(i_edit_num);
-        }else{
+        }else if(c=="h" || c=="H"){
             
+            system("clear");
+            showOptions(MAIN_SCREEN);
+        }
+        else{
+            invalid_choice = 1;
             system("clear");
             showOptions(MAIN_SCREEN);
         }
