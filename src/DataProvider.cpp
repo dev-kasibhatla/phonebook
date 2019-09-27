@@ -161,7 +161,7 @@ class DataProvider	{
 		state.erase(state.begin()+index);
 		saveToFile();
 		system("clear");
-		cout<<endl<<ftemp<<" was deleted\n";
+		cout<<endl<<ftemp<<" was deleted\n[PRESS ENTER TO CONTINUE]\n";
 	}
 
 	int size(){
