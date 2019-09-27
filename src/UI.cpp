@@ -95,6 +95,8 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                             //Create contact
                             int s = editor.size();                        
                             editor.add();
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(),'\n');
                             if(s < editor.size()){
                                 //new contact was added
                                 displayContact(editor.size());
@@ -140,6 +142,8 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
                         case 'd':
                             //delete
                             editor.del(i_edit_num);
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(),'\n');
                             showOptions(MAIN_SCREEN);
                             break;
                         case 'e':
@@ -208,7 +212,7 @@ int i_edit_num;  //global variable used for edit Contact functionality now can b
         //cout<<endl;
         system("clear");
         //boiler plate
-        int width = 120, max = 25;
+        int width = 120, max = 20;
         
         cout<<res.size()<<" search results"<<endl;
         showOptions(SEARCH_CONTACTS);
